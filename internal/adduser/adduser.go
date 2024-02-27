@@ -29,7 +29,7 @@ func AddUser() (int, rsa.PrivateKey) {
         panic(err)
     }
 
-    req, err := http.NewRequest("POST", "http://localhost:8080/addpublickey", bytes.NewReader(jsonData))
+    req, err := http.NewRequest("POST", "http://149.248.7.39:8080/addpublickey", bytes.NewReader(jsonData))
     if err != nil {
         log.Fatalf("impossible to build request: %s", err)
     }
