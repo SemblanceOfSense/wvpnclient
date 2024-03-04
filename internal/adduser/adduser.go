@@ -6,7 +6,6 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"log"
-	mrand "math/rand/v2"
 	"net/http"
 	"time"
 )
@@ -16,13 +15,13 @@ type PublicKeyRequest struct {
     UserID int
 }
 
-func AddUser() (int, rsa.PrivateKey) {
+func AddUser(id int) (rsa.PrivateKey) {
     privateKey, err := rsa.GenerateKey(crand.Reader, 2048)
     if err != nil {
         panic(err)
     }
 
-    requestBody := &PublicKeyRequest{privateKey.PublicKey, mrand.IntN(1000000000)}
+    requestBody := &PublicKeyRequest{privateKey.PublicKey, id}
 
     jsonData, err := json.Marshal(requestBody)
     if err != nil {

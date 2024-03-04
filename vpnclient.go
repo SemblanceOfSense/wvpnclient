@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-    id, key := adduser.AddUser()
+    id := 1
+    key := adduser.AddUser(1)
     fmt.Printf("%d %d\n", id, key.E)
 
     x, err := json.Marshal(key)
