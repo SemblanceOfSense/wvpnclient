@@ -40,5 +40,5 @@ func AddUser(id int) (rsa.PrivateKey) {
     }
     log.Printf("status Code: %d", res.StatusCode)
 
-    return requestBody.UserID, *privateKey
+    return *privateKey
 }
