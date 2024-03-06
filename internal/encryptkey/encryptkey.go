@@ -82,9 +82,6 @@ func DecryptKey(encryptedText []byte, password []byte, iv []byte, salt []byte) (
 	// Remove padding from the decrypted text
 	decryptedText = removePadding(decryptedText)
 
-	// Print the decrypted text
-	fmt.Printf("Decrypted Text: %s\n", decryptedText)
-
     return decryptedText
 }
 
