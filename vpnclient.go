@@ -2,15 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"vpnclient/internal/getwgkey"
+	"vpnclient/internal/writeconfig"
 )
 
 func main() {
-    x, err := getwgkey.GetWgKey(1, "password")
-    if err != nil {
-        log.Fatal(err)
-    }
-
-    fmt.Println(x)
+    err := writeconfig.GenerateConfig()
+    if err != nil { fmt.Println(err) }
 }
