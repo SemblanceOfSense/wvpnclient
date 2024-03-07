@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-    err := writeconfig.GenerateConfig()
+    err := writeconfig.GenerateConfig(1, "password")
     if err != nil { fmt.Println(err) }
 }
