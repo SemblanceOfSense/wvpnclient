@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"vpnclient/internal/addserverpeer"
 )
 
-func GenerateConfig() error {
+func GenerateConfig(id int, password string) error {
     cmd := exec.Command("wg", "genkey")
 
     output, err := cmd.Output()
@@ -16,7 +17,6 @@ func GenerateConfig() error {
     }
     privKey := string(output)
     privKey = privKey[:len(privKey)-1]
-
 
     pubkeyCmd := "echo " + privKey + " | wg pubkey"
     cmd = exec.Command("bash", "-c", pubkeyCmd)
@@ -28,6 +28,9 @@ func GenerateConfig() error {
     }
     pubKey := string(output)
     pubKey = pubKey[:len(pubKey)-1]
+
+    err = addserverpeer.AddServerPeer(pubKey, id, password)
+    if err != nil { return err }
 
     _ = os.Remove("/etc/wireguard/wg0.conf")
 
