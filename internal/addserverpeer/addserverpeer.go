@@ -14,9 +14,9 @@ import (
 )
 
 type AddServerPeerStruct struct {
-    id int
-    pubkey string
-    signature []byte
+    Id int
+    Pubkey string
+    Signature []byte
 }
 
 func AddServerPeer(pubkey string, id int, password string) error {
@@ -34,18 +34,26 @@ func AddServerPeer(pubkey string, id int, password string) error {
 	    panic(err)
     }
 
-    requestJson, err := json.Marshal(AddServerPeerStruct{id, pubkey, signature})
-    if err != nil { return err }
+    requestBody := &AddServerPeerStruct{Id: id, Pubkey: pubkey, Signature: signature}
 
-    req, err := http.NewRequest("POST", "http://149.248.7.39:8080/addpeer", bytes.NewReader(requestJson))
-    if err != nil { return err }
+    jsonData, err := json.Marshal(requestBody)
+    if err != nil {
+        panic(err)
+    }
+
+    req, err := http.NewRequest("POST", "http://149.248.7.39:8080/addpeer", bytes.NewReader(jsonData))
+    if err != nil {
+        log.Fatalf("impossible to build request: %s", err)
+    }
 
     client := http.Client{Timeout: 10 * time.Second}
     res, err := client.Do(req)
     if err != nil {
-        return err
+        log.Fatalf("impossible to send request: %s", err)
     }
+    defer res.Body.Close()
     log.Printf("status Code: %d", res.StatusCode)
+
 
     return nil
 }
