@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"vpnclient/internal/addserverpeer"
+	"vpnclient/internal/getwgkey"
 )
 
 func GenerateConfig(id int, password string) error {
@@ -34,7 +35,9 @@ func GenerateConfig(id int, password string) error {
 
     _ = os.Remove("/etc/wireguard/wg0.conf")
 
-    newpeer := "[Interface]\nPrivateKey = " + privKey + "\nAddress = 10.0.0.2/24\n\n[Peer]\nPublicKey = " + pubKey + "\nEndpoint = 140.82.19.210:443\nAllowedIPs = 0.0.0.0/0\nPersistentKeepalive = 25"
+    wgkey, err := getwgkey.GetWgKey(id, password)
+    if err != nil { return err }
+    newpeer := "[Interface]\nPrivateKey = " + privKey + "\nAddress = 10.0.0.2/24\n\n[Peer]\nPublicKey = " + wgkey + "\nEndpoint = 140.82.19.210:443\nAllowedIPs = 0.0.0.0/0\nPersistentKeepalive = 25"
     err = os.WriteFile("/etc/wireguard/wg0.conf", []byte(newpeer), 1204)
     if err != nil {
         fmt.Println("3")
