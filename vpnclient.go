@@ -2,25 +2,46 @@ package main
 
 import (
 	"fmt"
-	"github.com/webui-dev/go-webui/v2"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/widget"
 )
 
-const script = "return [document.getElementById('userid'), document.getElementById('password')]"
+var content *fyne.Container = container.New(layout.NewVBoxLayout())
 
-func signup(e webui.Event) string {
-    var Timeout uint = 10
-    var opts = webui.ScriptOptions{Timeout: Timeout}
-    resp, err := e.Window.Script(script, opts)
-    if err != nil {
-        e.Window.Show("<p>" + err.Error() + "</p>")
-    }
-    fmt.Println(resp)
-    return ""
+func index() {
+    signinbutton := widget.NewButton("Sign In", signinbutton)
+    loginbutton := widget.NewButton("Log In", loginbutton)
+    content.Add(layout.NewSpacer())
+    content.Add(signinbutton)
+    content.Add(loginbutton)
+    content.Add(layout.NewSpacer())
+}
+
+
+func signinbutton() {
+    content.RemoveAll()
+}
+
+func loginbutton() {
+    content.RemoveAll()
 }
 
 func main() {
-    index := webui.NewWindow()
-    index.Show("webui/index.html")
+	a := app.New()
+	w := a.NewWindow("Hello World")
 
-    webui.Bind(index, "signup", signup)
+    index()
+
+	w.SetContent(content)
+
+    w.ShowAndRun()
+    tidyUp()
+}
+
+func tidyUp() {
+	fmt.Println("Exited")
 }
