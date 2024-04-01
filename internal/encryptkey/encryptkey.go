@@ -21,7 +21,6 @@ func EncryptKey(plaintext []byte, password []byte) ([]byte, []byte, []byte) {
 	// Generate a random IV (Initialization Vector)
 	iv := make([]byte, aes.BlockSize)
 	if _, err := rand.Read(iv); err != nil {
-		fmt.Println("Error generating IV:", err)
 		return nil, nil, nil
 	}
 
@@ -41,10 +40,6 @@ func EncryptKey(plaintext []byte, password []byte) ([]byte, []byte, []byte) {
 	// Encrypt the plaintext
 	ciphertext := make([]byte, len(plaintext))
 	mode.CryptBlocks(ciphertext, plaintext)
-
-	// Print the encrypted text and IV
-	fmt.Printf("Encrypted Text: %x\n", ciphertext)
-	fmt.Printf("Initialization Vector (IV): %x\n", iv)
 
     return ciphertext, iv, salt
 }

@@ -1,47 +1,53 @@
 package main
 
 import (
-	"fmt"
+	"log"
+    "strconv"
+    "os"
+    "encoding/json"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/widget"
+    "github.com/tcnksm/go-input"
+
+    "vpnclient/internal/adduser"
+    "vpnclient/internal/encryptkey"
+    "vpnclient/internal/addprivkey"
+    "vpnclient/internal/writeconfig"
 )
 
-var content *fyne.Container = container.New(layout.NewVBoxLayout())
-
-func index() {
-    signinbutton := widget.NewButton("Sign In", signinbutton)
-    loginbutton := widget.NewButton("Log In", loginbutton)
-    content.Add(layout.NewSpacer())
-    content.Add(signinbutton)
-    content.Add(loginbutton)
-    content.Add(layout.NewSpacer())
-}
-
-
-func signinbutton() {
-    content.RemoveAll()
-}
-
-func loginbutton() {
-    content.RemoveAll()
-}
-
 func main() {
-	a := app.New()
-	w := a.NewWindow("Hello World")
+    ui := &input.UI {
+        Writer: os.Stdout,
+        Reader: os.Stdin,
+    }
+    options := &input.Options{
+        Required: true,
+        Loop:     true,
+    }
 
-    index()
+    query := "signup or login?"
+    initial, err := ui.Ask(query, options)
 
-	w.SetContent(content)
+    if err != nil { log.Fatal(err) }
 
-    w.ShowAndRun()
-    tidyUp()
-}
+    query = "UserID?"
+    readid, err := ui.Ask(query, options)
+    if err != nil { log.Fatal(err) }
+    id, err := strconv.Atoi(readid)
+    if err != nil { log.Fatal(err) }
+    query = "Password?"
+    password, err := ui.Ask(query, options)
+    if err != nil { log.Fatal(err) }
 
-func tidyUp() {
-	fmt.Println("Exited")
+    switch initial {
+    case "signup":
+        key := adduser.AddUser(id)
+        x, err := json.Marshal(key)
+        if err != nil { log.Fatal(err) }
+        a, b, c := encryptkey.EncryptKey([]byte(string(x)), []byte(password))
+
+        addprivkey.AddPrivKey(id, a, b, c)
+    case "login":
+        err = writeconfig.GenerateConfig(id, password)
+        if err != nil { log.Fatal(err) }
+    }
 }

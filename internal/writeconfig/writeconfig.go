@@ -43,6 +43,5 @@ func GenerateConfig(id int, password string) error {
         fmt.Println("3")
         return err
     }
-
     return nil
 }
